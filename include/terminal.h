@@ -5,8 +5,7 @@
 #ifndef C_SQL_TERMINAL_H
 #define C_SQL_TERMINAL_H
 
-#include "base.h"
-#include "utils/sqlCreate.h"
+#include "helpers.h"
 
 using function = bool(*)(vector<string> argv);
 using function_pair = pair<string, function>;
@@ -32,6 +31,7 @@ bool operation_register();
 void clear();
 void exit();
 void help();
+void show();
 
 
 bool sql_create(vector<string> argv);
