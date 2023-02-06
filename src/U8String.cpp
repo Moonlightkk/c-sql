@@ -4,17 +4,22 @@
 
 #include "../include/U8String.h"
 
-//U8String::U8String()
-//{
-//    ;
-//}
-//
-//string U8String::toRawBytes()
-//{
-//    ;
-//}
-//
-//std::istream& operator>>(std::istream& istream, U8String u8string)
-//{
-//    ;
-//}
+U8String::U8String()
+{
+    str.resize(u8str_length);
+}
+
+char* U8String::toRawBytes()
+{
+    return str.data();
+}
+
+void U8String::convertFromLocale(wstring localeStr)
+{
+
+}
+
+std::istream& operator>>(std::istream& istream, U8String u8string)
+{
+    ;
+}
