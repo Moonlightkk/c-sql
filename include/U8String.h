@@ -3,8 +3,14 @@
 #include <string>
 #include <codecvt>
 #include <istream>
+#include <fstream>
+#include <ostream>
 
+#ifdef _WIN32
+#elif defined(__linux__)
+#endif
 using std::string;
+using std::wstring;
 using std::string_view;
 
 static inline constexpr unsigned u8str_length = 256;
@@ -14,18 +20,20 @@ static inline constexpr unsigned u8str_length = 256;
 class U8String
 {
 private:
-    char str[u8str_length];
+    string str;
+    void convertFromLocale (wstring localeStr);
 public:
     /* Constructor */
     U8String();
     /* Convert u8string to bytes */
-    string toRawBytes();
+    char* toRawBytes();
     /* Read u8string from input stream */
     friend std::istream& operator>>(std::istream& istream, U8String u8string);
+    friend std::ostream& operator<<(std::ostream& ostream, U8String u8String);
 };
 
-/* Read u8string from input stream */
+/* Stream Operations */
 std::istream& operator>>(std::istream& istream, U8String u8string);
-
+std::ostream& operator<<(std::ostream& ostream, U8String u8String);
 
 #endif //C_SQL_U8STRING_H

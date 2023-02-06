@@ -6,12 +6,17 @@
 
 U8String::U8String()
 {
-    ;
+    str.resize(u8str_length);
 }
 
-string U8String::toRawBytes()
+char* U8String::toRawBytes()
 {
-    ;
+    return str.data();
+}
+
+void U8String::convertFromLocale(wstring localeStr)
+{
+
 }
 
 std::istream& operator>>(std::istream& istream, U8String u8string)
