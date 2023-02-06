@@ -1,6 +1,9 @@
-cmake_minimum_required(VERSION 3.22)
-project(c_sql)
+cmake_minimum_required(VERSION 3.19)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(c_sql main.cpp include/U8String.h)
+project(c_sql)
+
+include_directories(./include)
+
+add_executable(terminal src/terminal.cpp)
