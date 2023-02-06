@@ -4,6 +4,8 @@
 
 #include <terminal.h>
 
+map<string, function> function_map;
+
 void start_terminal() {
     std::ios_base::sync_with_stdio(false);
     cout << "Welcome to c-sql monitor.  Commands end with ;." << endl;
@@ -104,11 +106,7 @@ bool operation_register() {
 }
 
 void clear() {
-#ifdef _WIN32
     system("cls");
-#else
-    system("clear");
-#endif
 }
 
 void exit() {
@@ -161,7 +159,7 @@ bool sql_use(vector<string> argv) {
 
 
 // test code
-int main() {
-    start_terminal();
-    return 0;
-}
+//int main() {
+//    start_terminal();
+//    return 0;
+//}

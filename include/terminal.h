@@ -32,7 +32,7 @@ using function_pair = pair<string, function>;
 //    upadte,
 //};
 
-map<string, function> function_map;
+extern map<string, function> function_map;
 
 void start_terminal();
 void command_processor(const string& command, bool& flag);
