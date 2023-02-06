@@ -1,3 +1,0 @@
-C:/Users/Rhywu/tmysql/c-sql/cmake-build-debug/CMakeFiles/c_sql.dir
-C:/Users/Rhywu/tmysql/c-sql/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/Rhywu/tmysql/c-sql/cmake-build-debug/CMakeFiles/rebuild_cache.dir
