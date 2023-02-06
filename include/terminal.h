@@ -5,18 +5,8 @@
 #ifndef C_SQL_TERMINAL_H
 #define C_SQL_TERMINAL_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <map>
-#include <utility>
-using std::cout, std::cin, std::endl;
-using std::string, std::getline;
-using std::stringstream;
-using std::vector;
-using std::map, std::pair;
-using std::move;
+#include "base.h"
+#include "utils/sqlCreate.h"
 
 using function = bool(*)(vector<string> argv);
 using function_pair = pair<string, function>;

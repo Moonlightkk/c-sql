@@ -20,6 +20,7 @@ void start_terminal() {
             cout << "c-sql>>>";
             continue;
         }
+        transform(input.begin(), input.end(), input.begin(), tolower);
         if (input.at(input.length() - 1) != ';') {
             command += input;
             command += " ";
@@ -119,6 +120,12 @@ void help() {
 
 bool sql_create(vector<string> argv) {
     cout << "sql_create" << endl;
+    CreateType ct;
+    if (argv[0] == "database") {
+        ct = database;
+    } else if (argv[0] == "table") {
+        ct = table;
+    }
     return true;
 }
 
