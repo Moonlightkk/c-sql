@@ -7,5 +7,6 @@
 
 #include "terminal.h"
 #include "U8String.h"
+#include "FileIO.h"
 
 #endif //C_SQL_PUBLIC_H
