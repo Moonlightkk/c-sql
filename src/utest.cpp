@@ -6,10 +6,12 @@
 #include <algorithm>
 #include <cstdint>
 #include "../include/FileIO.h"
+#include "../include/ConditionFunctor.hpp"
 using namespace std;
 
 int testFileIO()
 {
+    using namespace fop;
     int32_t a = 0;
     cout<<a<<endl;
     vector<unsigned char> buf;
@@ -20,3 +22,4 @@ int testFileIO()
     //cout<<static_cast<char>(321)<<endl;
     return 0;
 }
+
