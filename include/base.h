@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <variant>
+#include <stack>
 
 
 using std::cout, std::cin, std::endl;
@@ -26,6 +27,7 @@ using std::move;
 using std::transform;
 using std::setw, std::setfill, std::left;
 using std::variant;
+using std::stack;
 
 using Database = string;
 using Table = string;

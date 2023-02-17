@@ -15,8 +15,8 @@ using function_pair = pair<string, function>;
 //    create,
 //    drop,
 //    alter,
-//    select,
-//    insert,
+//    _select,
+//    _insert,
 //    rename,
 //    upadte,
 //};
@@ -38,9 +38,7 @@ bool sql_create(vector<string> argv);
 bool sql_select(vector<string> argv);
 bool sql_insert(vector<string> argv);
 bool sql_drop(vector<string> argv);
-bool sql_alter(vector<string> argv);
-bool sql_rename(vector<string> argv);
-bool sql_update(vector<string> argv);
+bool sql_delete(vector<string> argv);
 bool sql_use(vector<string> argv);
 
 

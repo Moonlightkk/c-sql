@@ -6,6 +6,7 @@
 #define C_SQL_DROPHELPER_H
 #include "base.h"
 
-bool drop_database(Database database);
+bool _drop_database(const Database& database);
+bool _drop_table(const Table& table);
 
 #endif //C_SQL_DROPHELPER_H

@@ -15,7 +15,7 @@ void start_terminal() {
     string input;
     string command;
     cout << "c-sql>>>";
-    while(flag && getline(cin, input)) {
+    while (flag && getline(cin, input)) {
         if (input.empty()) {
             cout << "c-sql>>>";
             continue;
@@ -30,11 +30,9 @@ void start_terminal() {
             command += input;
 
             // 丐版 输入合法性判断
-            for (auto & ch : command) {
-                if (ch == ';') {
-                    ch = ' ';
-                }
-                if (!(ch >= 'a' && ch <= 'z' || ch ==';' || ch == ' ' || ch == '_')) {
+            for (auto &ch: command) {
+                if (!((ch >= 'a' && ch <= 'z') || ch == ';' || ch == ' ' || ch == '(' || ch == ')' || ch == ',' ||
+                      isdigit(ch) || ch == '*')) {
                     isLegal = false;
                     cout << "Command format error. Use 'help;' to get help." << endl;
                     cout << "c-sql>>>";
@@ -42,6 +40,16 @@ void start_terminal() {
                 }
             }
 
+            // 替换 ( ) ,
+            for (auto it = command.begin(); it != command.end(); it++) {
+                if (*it == '(' || *it == ')' || *it == ',') {
+                    if (*(it + 1) == ' ') {
+                        command.erase(it);
+                    } else {
+                        *it = ' ';
+                    }
+                }
+            }
 
             if (isLegal) {
                 command_processor(command, flag);
@@ -51,14 +59,14 @@ void start_terminal() {
     }
 }
 
-void command_processor(const string& command, bool& flag) {
+void command_processor(const string &command, bool &flag) {
 //    cout << command << endl;
     stringstream ss(command);
     string sql_operation;
     ss >> sql_operation;
     vector<string> argv;
     string argc;
-    while(ss >> argc) {
+    while (ss >> argc) {
         if (argc == ";") {
             break;
         }
@@ -66,14 +74,15 @@ void command_processor(const string& command, bool& flag) {
     }
     if (sql_handler(sql_operation, argv, flag)) {
         // 命令有效后操作
+//        cout << "success!" << endl;
     } else {
-        cout << "Incorrect command '" + command<< "'." << endl;
+        cout << "Incorrect command '" + command << "'." << endl;
         cout << "Use 'help;' to get help." << endl;
         cout << "c-sql>>>";
     }
 }
 
-bool sql_handler(const string& sql_operation, vector<string> argv, bool& flag) {
+bool sql_handler(const string &sql_operation, vector<string> argv, bool &flag) {
     if (sql_operation == "exit") {
         flag = false;
         exit();
@@ -110,11 +119,9 @@ bool operation_register() {
     try {
         function_map.insert(function_pair("create", sql_create));
         function_map.insert(function_pair("drop", sql_drop));
-        function_map.insert(function_pair("alter", sql_alter));
+        function_map.insert(function_pair("delete", sql_delete));
         function_map.insert(function_pair("select", sql_select));
         function_map.insert(function_pair("insert", sql_insert));
-        function_map.insert(function_pair("rename", sql_rename));
-        function_map.insert(function_pair("update", sql_update));
         function_map.insert(function_pair("use", sql_use));
         return true;
     } catch (...) {
@@ -134,7 +141,7 @@ void exit() {
 }
 
 void help() {
-    cout << "help" << endl;
+    cout << "No help so far." << endl;
 }
 
 void show() {
@@ -148,17 +155,22 @@ bool sql_create(vector<string> argv) {
     }
 
     if (argv[0] == "database") {
-        if (create_database(argv[1])) {
+        if (_create_database(argv[1])) {
             cout << "create database " << argv[1] << endl;
             return true;
         } else {
             return false;
         }
     } else if (argv[0] == "table") {
+//        cout << "table" << endl;
         argv.erase(argv.begin());
         Table tb_name = argv[0];
         argv.erase(argv.begin());
-        if (create_table(tb_name, table_create_helper(argv))) {
+        string primary;
+        unordered_map<Column, Type> mp = table_create_helper(argv, primary);
+        if (_create_table(tb_name, mp, primary)) {
+            // 操作成功后的操作
+            // TODO
 
             return true;
         } else {
@@ -169,40 +181,42 @@ bool sql_create(vector<string> argv) {
 }
 
 bool sql_select(vector<string> argv) {
-    cout << "sql_select" << endl;
-    return true;
+//    cout << "sql_select" << endl;
+    vector<vector<string>> res;
+    if (argv.size() == 3 || argv.size() == 5) {
+        return _select(res, argv[2], argv[0]);
+    }
+    return false;
 }
 
 bool sql_insert(vector<string> argv) {
-    cout << "sql_insert" << endl;
-    return true;
+//    cout << "sql_insert" << endl;
+    if (argv[1] != "values" || argv.size() < 3) {
+        return false;
+    }
+    vector<string> values(argv.begin() + 2, argv.end());
+    return _insert(argv[0], values);
 }
 
 bool sql_drop(vector<string> argv) {
-    if (argv[0] != "database") {
+    if (argv.size() != 2) {
         return false;
     }
-    return drop_database(argv[1]);
-}
-
-bool sql_alter(vector<string> argv) {
-    cout << "sql_alter" << endl;
-    return true;
-}
-
-bool sql_rename(vector<string> argv) {
-//    cout << "sql_rename" << endl;
-    if (argv.size() != 4) {
+    if (argv[0] == "database") {
+        return _drop_database(argv[1]);
+    } else if (argv[0] == "table") {
+        return _drop_table(argv[1]);
+    } else {
         return false;
     }
-    Table old_name = argv[1];
-    Table new_name = argv[3];
-    return rename_table(old_name, new_name);
 }
 
-bool sql_update(vector<string> argv) {
-    cout << "sql_update" << endl;
-    return true;
+bool sql_delete(vector<string> argv) {
+//    cout << "sql_delete" << endl;
+    if (argv.size() == 1 || argv.size() == 3) {
+        return _delete(argv[0], argv[2]);
+    }
+    return false;
 }
 
 bool sql_use(vector<string> argv) {
@@ -215,10 +229,3 @@ bool sql_use(vector<string> argv) {
 
     return true;
 }
-
-
-// test code
-//int main() {
-//    start_terminal();
-//    return 0;
-//}
