@@ -6,6 +6,7 @@
 #define C_SQL_FILEIO_H
 #include "base.h"
 #include "ConditionFunctor.hpp"
+#include "U8String.h"
 #include <filesystem>
 
 /* .dat file structure example
@@ -29,29 +30,42 @@ namespace fop {
         using cfi = cond::ConditionFunctor<int>;
         using cfs = cond::ConditionFunctor<string>;
         friend class FileIO;
-        static constexpr unsigned headMaxSz = 20480;
+//        static constexpr unsigned headMaxSz = 20480;
         static constexpr char tableSuffix[] = ".dat";
         static constexpr char idxSuffix[] = ".idx";
+        /*
+         * Members for generic operations
+         */
         directory_entry dir;
-        unordered_map<string, bool> tableList;
+        unordered_map<string, bool> tableList;//True if index exists
         bool isValid = false;
 
         /*
          * Members for table operations: select, create, delete, insert
-         *
          */
         unsigned rowOffset = 0;
         unsigned headOffset = 0;
         unordered_map<string, unsigned> columnOffset;
         map<string, bool> columnType;// True = int, False = string
         std::fstream fp;
-        std::fstream idxp;
+        string currentTable;
         bool isOpen = false;
+
+        /*
+         * Members for index and primary
+         */
+        string primaryColumn;
+        map<ValType, unsigned> index;
+        std::fstream idxp;
+        bool isIndexValid = false;
+
         void openTable(const string& name);
         void closeTable();
         void writeHead();
         void writeHead(const map<string, bool> &cols);
         void readHead();
+        void writeIndex();
+        void readIndex();
     public:
         DatabaseDir() = default;
         ~DatabaseDir();
