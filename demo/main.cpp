@@ -9,20 +9,30 @@
 
 bool utest()
 {
+    map<string, string> testColNames;
+    testColNames["acol"] = "int";
+    testColNames["bcol"] = "int";
+    testColNames["ccol"] = "string";
+    map<string, string> testVals1;
+    testVals1["acol"] = "1";
+    testVals1["bcol"] = "1";
+    testVals1["ccol"] = "hi";
+    map<string, string> testVals2;
+    testVals2["acol"] = "-1";
+    testVals2["bcol"] = "-1";
+    testVals2["ccol"] = "hi";
     using namespace fop;
-    FileIO::initFileSystem();
     FileIO fo;
-    map<string ,bool> cls;
-    cls["col"] = true;
-    cls["aol"] = false;
-    cls["bol"] = true;
+    fo.initFileSystem();
     fo.create("db1");
     fo.use("db1");
-    fo.create("tb1", cls, "col");
-    fo.create("tb2", cls, "aol");
-    fo.select("tb1");
-    fo.select("tb2");
-    fo.dropTable("tb1");
+    fo.create("atable", testColNames);
+    //fo.dropTable("atable");
+//    fo.insert("atable", testVals1);
+//    fo.insert("atable", testVals2);
+    string cond = "ccol=hi";
+    fo.select("atable", "acol", cond);
+    cout << fo.dataName() << endl;
     return true;
 }
 
@@ -41,6 +51,6 @@ int main() {
     //start_terminal();
     /* do some test */
     utest();
-    cout <<"2"<<endl;
+    cout <<"end test"<<endl;
     return 0;
 }

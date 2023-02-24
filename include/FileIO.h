@@ -12,15 +12,11 @@
 /* .dat file structure example
  * typeid:I/S/N
  * cn:column name(lower characters)
- * Nid Icn1 Scn2 Scn3 Icn4
- * 1 ... ... ... ...
+ * Icn1 Scn2 Scn3 Icn4
+ * ... ... ... ...
  * NOTE: .dat file does not have space as split character actually
  */
 
-/* .idx file structure example
- *
- *
- */
 namespace fop {
     using std::ios_base, std::int32_t;
     using namespace std::filesystem;
@@ -29,8 +25,10 @@ namespace fop {
     private:
         using cfi = cond::ConditionFunctor<int>;
         using cfs = cond::ConditionFunctor<string>;
+        static constexpr bool valStr = false;
+        static constexpr bool valInt = true;
         friend class FileIO;
-//        static constexpr unsigned headMaxSz = 20480;
+        static constexpr unsigned bufferSize = 4096;
         static constexpr char tableSuffix[] = ".dat";
         static constexpr char idxSuffix[] = ".idx";
         /*
@@ -43,9 +41,8 @@ namespace fop {
         /*
          * Members for table operations: select, create, delete, insert
          */
-        unsigned rowOffset = 0;
-        unsigned headOffset = 0;
         unordered_map<string, unsigned> columnOffset;
+        vector<string> columnOrder;
         map<string, bool> columnType;// True = int, False = string
         std::fstream fp;
         string currentTable;
@@ -62,55 +59,111 @@ namespace fop {
         void openTable(const string& name);
         void closeTable();
         void writeHead();
-        void writeHead(const map<string, bool> &cols);
+
+        [[maybe_unused]] void writeHead(const map<string, bool> &cols);
         void readHead();
         void writeIndex();
         void readIndex();
+        /*
+         * read record where get pointer of fp pointed: exchange current line with last line
+         * NOTE: get pointer should point to a valid start of record when method called
+         */
+        ValType readElem(const string& columnName);
     public:
         DatabaseDir() = default;
         ~DatabaseDir();
         void assign(const path &dirPath);
         void clear();
-        string createTable(const string &tableName, const map<string, bool> &columns, const string &primary);
-        string createTable(const string &tableName, const map<string, bool> &columns);
-        string dropTable(const string &tableName);
-        string insert(const string &tableName, const vector<ValType>& values);
-        string remove(const string &tableName, const cfi &cf);
-        string remove(const string &tableName, const cfs &cf);
-        string select(const string &tableName);
+        bool createTable(const string &tableName, const vector<pair<string, bool>> &columns, const string &primary, char* error);
+        bool createTable(const string &tableName, const vector<pair<string, bool>> &columns, char* error);
+        bool dropTable(const string &tableName, char* error);
+        bool insert(const string &tableName, const vector<ValType>& values, char* error);
+        /*
+         * remove records, using cfi&cfs as condition control
+         */
+        bool remove(const string &tableName, const string &columnName, const cfi &cf, char* error);
+        bool remove(const string &tableName, const string &columnName, const cfs &cf, char* error);
+        bool remove(const string &tableName, char* error);
+        bool select(const string &tableName, const string& resColumnName, const string &columnName, const cfs &cf, vector<vector<string>>& result, char* error);
+        bool select(const string &tableName, const string& resColumnName, const string &columnName, const cfi &cf, vector<vector<string>>& result,  char* error);
+        bool select(const string &tableName, const string &resColumnName, vector<vector<string>> &result, char *error);
 
     };
 
 /* Interact with <dbname> file */
     class FileIO {
     public:
-        /** Constructor
+        /** Constructor and destructor
          *
          */
         FileIO() = default;
         ~FileIO();
+        /**
+         * get currently open database name
+         * @return
+         */
         string dataName();
 
-        string dropDatabase(const string &name);
+        /**
+         * Drop database: delete dir in file system
+         * @param name
+         * @return
+         */
+        bool dropDatabase(const string &name);
 
-        string dropTable(const string &name);
+        /**
+         * Drop table
+         * @param name
+         * @return
+         */
+        bool dropTable(const string &name);
 
-        string select(const string &table);
+        /**
+         * select columns where condition satisfy
+         * @param tableName name of column's table
+         * @param columnName column need to be selected, * for all columns
+         * @param condition condition of column, empty if no condition
+         * @return
+         */
+        vector<vector<string>> select(const string &tableName, const string &columnName, const string &condition);
 
-        string insert(const string &table, const vector<ValType>& values);
+        /**
+         * Insert new record into table
+         * @param table
+         * @param values
+         * @return
+         */
+        bool insert(const string &table, const map<string, string>& values);
 
-        string remove(const string &table, const string &cond);
-
-        string create(const string &tableName, const map<string, bool> &columns, const string& primary);
-        string create(const string &tableName, const map<string, bool> &columns);
-        string create(const string &dbName);
+        bool remove(const string &table, const string &cond);
+        /**
+         * Create new table, with primary key specified
+         * @param tableName
+         * @param columns
+         * @param primary
+         * @return
+         */
+        bool create(const string &tableName, const map<string, string>& columns, const string& primary);
+        /**
+         * Create new table
+         * @param tableName
+         * @param columns
+         * @return
+         */
+        bool create(const string &tableName, const map<string, string>& columns);
+        /**
+         * Create new database
+         * @param dbName: name of database
+         * @return
+         */
+        bool create(const string &dbName);
 
         /**
          * Alter current database: change the dir
          * @param dataBaseName
          * @return
          */
-        string use(const string &dataBaseName);
+        bool use(const string &dataBaseName);
 
         /**
          * Convert int32_t to bytes array
@@ -126,14 +179,20 @@ namespace fop {
          */
         static vector<unsigned char> i32ToBytes(int32_t val);
 
-        static void initFileSystem();
+        /**
+         * Init file system: change working path, init static variables
+         */
+        void initFileSystem();
 
         friend class DatabaseDir;
 
     private:
         DatabaseDir database;
         bool isDBOpened = false;
-
+        static constexpr unsigned bufferSize = 4096;
+        static constexpr char _opList[3] = {'=', '<', '>'};
+        unordered_map<char, std::function<bool(int, int)>> _iopMap;
+        unordered_map<char, std::function<bool(string , string)>> _sopMap;
     protected:
     };
 }//namespace fop

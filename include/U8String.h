@@ -44,6 +44,7 @@ public:
     [[nodiscard]] const char* toRawChars()const;
     [[nodiscard]] string toRawString()const;
     explicit operator string()const;
+    [[nodiscard]] string toFormatString()const;
     /* Read u8string from input stream */
     friend std::istream& operator>>(std::istream& istream, U8String& u8string);
     /* Write u8string to output stream */

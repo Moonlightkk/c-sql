@@ -6,6 +6,7 @@
 #define C_SQL_PUBLIC_H
 
 #include "terminal.h"
+#include "FileIO.h"
 
 
 #endif //C_SQL_PUBLIC_H
