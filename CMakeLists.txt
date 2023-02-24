@@ -17,7 +17,7 @@ link_directories(${PROJECT_SOURCE_DIR}/lib)
 # 生成dll
 aux_source_directory(./src SOURCE)
 aux_source_directory(./include INCLUDE)
-add_library(${PROJECT_NAME} STATIC ${SOURCE} ${INCLUDE})
+add_library(${PROJECT_NAME} STATIC ${SOURCE} ${INCLUDE} include/ConditionFunctor.hpp)
 install(TARGETS ${PROJECT_NAME} DESTINATION  ${PROJECT_SOURCE_DIR}/lib)
 #add_executable(terminal src/terminal.cpp)
 
