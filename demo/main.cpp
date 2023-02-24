@@ -25,15 +25,15 @@ bool utest()
     FileIO fo;
     fo.initFileSystem();
     fo.create("db1");
-    fo.use("db1");
-    fo.create("atable", testColNames);
+    fo.use("fb1");
+    fo.create("gtable", testColNames);
     //fo.dropTable("atable");
 //    fo.insert("atable", testVals1);
 //    fo.insert("atable", testVals2);
     string cond;
-    fo.select("atable", "*", cond);
-    fo.remove("atable", "acol=1");
-    fo.select("atable", "*", cond);
+    fo.select("btable", "*", cond);
+    fo.remove("btable", "acol=1");
+    fo.select("ctable", "*", cond);
     return true;
 }
 

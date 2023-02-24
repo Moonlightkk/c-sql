@@ -133,7 +133,7 @@ namespace fop {
          * @param values
          * @return
          */
-        bool insert(const string &table, const map<string, string>& values);
+        bool insert(const string &table, const vector<string>& values);
 
         /**
          * delete record from table, condition satisfied

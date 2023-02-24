@@ -992,7 +992,7 @@ vector<vector<string>> FileIO::select(const string &tableName, const string &col
     return res;
 }
 
-bool FileIO::insert(const string &table, const map<string, string>& values)
+bool FileIO::insert(const string &table, const vector<string>& values)
 {
     bool res;
     string error;
@@ -1005,11 +1005,11 @@ bool FileIO::insert(const string &table, const map<string, string>& values)
         int i_value;
         try
         {
-            i_value = stoi(value.second);
+            i_value = stoi(value);
             _values.emplace_back(i_value);
         }
         catch (std::invalid_argument&) {
-            _values.emplace_back(value.second);
+            _values.emplace_back(value);
         }
     }
 
