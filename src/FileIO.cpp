@@ -853,27 +853,28 @@ bool FileIO::create(const string& tableName, const map<string, string>& columns)
     return res;
 }
 
-//bool FileIO::create(const string &tableName,const map<string, string>& columns, const string &primary)
-//{
-//    bool res;
-//    string error;
-//    char errorBuffer[bufferSize];
-//    errorBuffer[0] = 0;
-//    vector<pair<string, bool>> _columns;
-//    for (const auto& column : columns)
-//    {
-//        /* type string need to be changed */
-//        if (column.second == "int")
-//            _columns.emplace_back(column.first, true);
-//        else
-//            _columns.emplace_back(column.first, false);
-//    }
-//    res = database.createTable(tableName, _columns, primary, errorBuffer);
-//    error.append(errorBuffer);
-//    if (!error.empty())
-//        cout << error << endl;
-//    return res;
-//}
+bool FileIO::create(const string &tableName,const map<string, string>& columns, const string &primary)
+{
+    bool res;
+    string error;
+    char errorBuffer[bufferSize];
+    errorBuffer[0] = 0;
+    vector<pair<string, bool>> _columns;
+    for (const auto& column : columns)
+    {
+        /* type string need to be changed */
+        if (column.second == "int")
+            _columns.emplace_back(column.first, true);
+        else
+            _columns.emplace_back(column.first, false);
+    }
+    res = database.createTable(tableName, _columns, primary, errorBuffer);
+    error.append(errorBuffer);
+    if (!error.empty())
+        cout << error << endl;
+    return res;
+}
+
 bool FileIO::insert(const string &table, const vector<string>& values)
 {
     bool res;
@@ -1021,36 +1022,6 @@ vector<vector<string>> FileIO::select(const string &tableName, const string &col
     return res;
 }
 
-bool FileIO::insert(const string &table, const map<string, string>& values)
-{
-    bool res;
-    string error;
-    char errorBuffer[bufferSize];
-    errorBuffer[0] = 0;
-    vector<ValType> _values;
-
-    for (auto value : values)
-    {
-        int i_value;
-        try
-        {
-            i_value = stoi(value.second);
-            _values.emplace_back(i_value);
-        }
-        catch (std::invalid_argument&) {
-            _values.emplace_back(value.second);
-        }
-    }
-
-    res = database.insert(table, _values, errorBuffer);
-    error.append(errorBuffer);
-    if (!error.empty())
-    {
-        cout << error << endl;
-    }
-    return res;
-}
-
 bool FileIO::remove(const string &tableName, const string &cond)
 {
     bool res;
@@ -1099,4 +1070,9 @@ bool FileIO::remove(const string &tableName, const string &cond)
 string FileIO::dataName()
 {
     return database.dir.path().string();
+}
+
+FileIO::FileIO()
+{
+    initFileSystem();
 }

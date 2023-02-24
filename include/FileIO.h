@@ -96,7 +96,7 @@ namespace fop {
         /** Constructor and destructor
          *
          */
-        FileIO() = default;
+        FileIO();
         ~FileIO();
         /**
          * get currently open database name

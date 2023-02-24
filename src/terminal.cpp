@@ -61,7 +61,9 @@ void start_terminal() {
 
 void command_processor(const string &command, bool &flag) {
 //    cout << command << endl;
-    stringstream ss(command);
+    string _command = command;
+    _command.pop_back();
+    stringstream ss(_command);
     string sql_operation;
     ss >> sql_operation;
     vector<string> argv;
