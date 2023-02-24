@@ -187,6 +187,7 @@ namespace fop {
 
         /**
          * Init file system: change working path, init static variables
+         * @note it should be invoked before any operations
          */
         void initFileSystem();
 

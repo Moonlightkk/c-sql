@@ -636,7 +636,7 @@ bool DatabaseDir::remove(const string &tableName, const string &columnName, cons
     path currentTablePath = dir.path();
     currentTablePath.append(tableName).concat(tableSuffix);
 
-    std::ofstream aux(auxTablePath);
+    std::ofstream aux(auxTablePath, ios_base::out|ios_base::binary);
     /* Check table exist */
     if (tableList.find(tableName) == tableList.end())
     {
@@ -663,7 +663,8 @@ bool DatabaseDir::remove(const string &tableName, const string &columnName, cons
     string head;
     fp.getline(lineBuffer, bufferSize);
     head.append(lineBuffer);
-    aux << head;
+    aux.write(head.c_str(), head.size());
+    aux.put('\n');
     auto record = fp.tellg();
     vector<char> line;
     while (fp.getline(lineBuffer, bufferSize)) {
@@ -677,7 +678,7 @@ bool DatabaseDir::remove(const string &tableName, const string &columnName, cons
         auto value = std::get<int>(readElem(columnName));
         if (!cf(value)) {
             for (auto character : line)
-                aux << character;
+                aux.put(character);
         }
         fp.seekg(nextRecord);
         record = nextRecord;
@@ -700,7 +701,7 @@ bool DatabaseDir::remove(const string &tableName, const string &columnName, cons
     path currentTablePath = dir.path();
     currentTablePath.append(tableName).concat(tableSuffix);
 
-    std::ofstream aux(auxTablePath);
+    std::ofstream aux(auxTablePath, ios_base::out|ios_base::binary);
     /* Check table exist */
     if (tableList.find(tableName) == tableList.end())
     {
@@ -726,7 +727,8 @@ bool DatabaseDir::remove(const string &tableName, const string &columnName, cons
     string head;
     fp.getline(lineBuffer, bufferSize);
     head.append(lineBuffer);
-    aux << head;
+    aux.write(head.c_str(), head.size());
+    aux.put('\n');
     auto record = fp.tellg();
     vector<char> line;
     while (fp.getline(lineBuffer, bufferSize)) {
@@ -740,7 +742,7 @@ bool DatabaseDir::remove(const string &tableName, const string &columnName, cons
         auto value = std::get<string>(readElem(columnName));
         if (!cf(value)) {
             for (auto character : line)
-                aux << character;
+                aux.put(character);
         }
         fp.seekg(nextRecord);
         record = nextRecord;
@@ -763,7 +765,7 @@ bool DatabaseDir::remove(const string &tableName, char *const error)
     path currentTablePath = dir.path();
     currentTablePath.append(tableName).concat(tableSuffix);
 
-    std::ofstream aux(auxTablePath);
+    std::ofstream aux(auxTablePath, ios_base::out|ios_base::binary);
     /* Check table exist */
     if (tableList.find(tableName) == tableList.end())
     {
@@ -779,7 +781,8 @@ bool DatabaseDir::remove(const string &tableName, char *const error)
     string head;
     fp.getline(lineBuffer, bufferSize);
     head.append(lineBuffer);
-    aux << head;
+    aux.write(head.c_str(), head.size());
+    aux.put('\n');
     closeTable();
     aux.close();
 

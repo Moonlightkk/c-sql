@@ -30,9 +30,10 @@ bool utest()
     //fo.dropTable("atable");
 //    fo.insert("atable", testVals1);
 //    fo.insert("atable", testVals2);
-    string cond = "ccol=hi";
-    fo.select("atable", "acol", cond);
-    cout << fo.dataName() << endl;
+    string cond;
+    fo.select("atable", "*", cond);
+    fo.remove("atable", "acol=1");
+    fo.select("atable", "*", cond);
     return true;
 }
 
