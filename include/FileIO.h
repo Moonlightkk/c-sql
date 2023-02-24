@@ -135,6 +135,12 @@ namespace fop {
          */
         bool insert(const string &table, const map<string, string>& values);
 
+        /**
+         * delete record from table, condition satisfied
+         * @param table table name
+         * @param cond condition string
+         * @return
+         */
         bool remove(const string &table, const string &cond);
         /**
          * Create new table, with primary key specified
