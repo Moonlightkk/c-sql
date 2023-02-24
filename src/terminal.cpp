@@ -4,7 +4,7 @@
 
 #include <terminal.h>
 
-map<string, function> function_map;
+map<string, func> function_map;
 
 void start_terminal() {
     std::ios_base::sync_with_stdio(false);
@@ -135,7 +135,6 @@ void clear() {
 }
 
 void exit() {
-//    TODO
 
     cout << "shutting down server..." << endl;
 }
@@ -167,7 +166,7 @@ bool sql_create(vector<string> argv) {
         Table tb_name = argv[0];
         argv.erase(argv.begin());
         string primary;
-        unordered_map<Column, Type> mp = table_create_helper(argv, primary);
+        map<Column, Type> mp = table_create_helper(argv, primary);
         if (_create_table(tb_name, mp, primary)) {
             // 操作成功后的操作
             // TODO
@@ -225,7 +224,6 @@ bool sql_use(vector<string> argv) {
     }
     string db_name = argv[0];
     cout << "DataBase " << db_name << endl;
-//    TODO
-
+    DB.use(db_name);
     return true;
 }

@@ -5,7 +5,9 @@
 #ifndef C_SQL_SELECTHELPER_H
 #define C_SQL_SELECTHELPER_H
 
+#include "fileHelper.h"
 #include "base.h"
+#include <FileIO.h>
 
 bool _select(vector<vector<string>> &res, const Table& table, const Column& column, const string& cond = "");
 void printRes(vector<vector<string>> &res);

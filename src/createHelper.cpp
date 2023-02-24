@@ -4,14 +4,14 @@
 #include "utils/createHelper.h"
 
 bool _create_database(const Database& db_name) {
-//    TODO
+    DB.create(db_name);
 
     return true;
 }
 
 
-unordered_map<Column, Type> table_create_helper(vector<string> argv, string& primary) {
-    unordered_map<Column, Type> field;
+map<Column, Type> table_create_helper(vector<string> argv, string& primary) {
+    map<Column, Type> field;
     try {
         for (auto it = argv.begin(); it != argv.end(); it++) {
             if (*it == "primary") {
@@ -34,7 +34,7 @@ unordered_map<Column, Type> table_create_helper(vector<string> argv, string& pri
     return field;
 }
 
-bool _create_table(const Table& tb_name, const unordered_map<Column, Type>& Field, const string& primary) {
+bool _create_table(const Table& tb_name, map<Column, Type> Field, const string& primary) {
     if (Field.empty()) {
         return false;
     }
@@ -51,13 +51,11 @@ bool _create_table(const Table& tb_name, const unordered_map<Column, Type>& Fiel
     }
     cout << "+----------+----------+" << endl;
 
-//    创建表操作    成功 return true 失败 return false
-//    TODO
-//    if ( /* expression */ ) {
-//        return true;
-//    } else {
-//        return false;
-//    }
+    if (!primary.empty()) {
+        DB.create(tb_name, Field, primary);
+    } else {
+        DB.create(tb_name, Field);
+    }
     return true;
 }
 

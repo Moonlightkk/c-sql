@@ -6,6 +6,9 @@
 #define C_SQL_DELETEHELPER_H
 
 #include "base.h"
+#include <FileIO.h>
+#include "fileHelper.h"
+//FileIO DB;
 
 bool _delete(const Table& table, const string& cond="");
 

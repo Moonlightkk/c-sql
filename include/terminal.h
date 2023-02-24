@@ -7,8 +7,8 @@
 
 #include "helpers.h"
 
-using function = bool(*)(vector<string> argv);
-using function_pair = pair<string, function>;
+using func = bool(*)(vector<string> argv);
+using function_pair = pair<string, func>;
 
 
 //enum operation {
@@ -21,7 +21,8 @@ using function_pair = pair<string, function>;
 //    upadte,
 //};
 
-extern map<string, function> function_map;
+
+extern map<string, func> function_map;
 
 void start_terminal();
 void command_processor(const string& command, bool& flag);

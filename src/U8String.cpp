@@ -33,6 +33,14 @@ void U8String::fromString(const string &str) {
     end = u8end - buffer.begin();
 }
 
+string U8String::toFormatString() const
+{
+    string result;
+    result.resize(end);
+    std::copy(buffer.begin(), buffer.begin() + end, result.begin());
+    return result;
+}
+
 const char* U8String::toRawChars() const
 {
     return buffer.data();
@@ -50,7 +58,7 @@ string U8String::toRawString()const {
 std::istream& operator>>(std::istream& istream, U8String &u8string)
 {
     string str;
-    while (!isspace(istream.peek()))
+    while (!isspace(istream.peek()) && istream.peek() != -1)
     {
         char ch = istream.get();
         str.push_back(ch);
